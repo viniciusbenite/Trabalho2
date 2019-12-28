@@ -134,9 +134,16 @@ static void prepareIngredients ()
     }
 
     /* TODO: insert your code here */
-    /* TODO: ids dos agentes */
     /* Preparando os ingredientes */
     sh->fSt.st.agentStat = PREPARING;
+    saveState(nFic, &sh->fSt);
+
+    /* TODO: ids dos agentes */
+    int ing = rand()%NUMINGREDIENTS;
+    int ing2;
+    if (ing == ing2) {
+        ing2 = rand()%NUMINGREDIENTS;
+    }
     saveState(nFic, &sh->fSt);
 
     if (semUp (semgid, sh->mutex) == -1) {                                                        /* leave critical region */
@@ -145,7 +152,14 @@ static void prepareIngredients ()
     }
 
     /* TODO: insert your code here */
-
+    if (semUp (semgid, sh->ingredient[ing]) == -1) {                                                        /* leave critical region */
+        perror ("error on the up operation for semaphore access (AG)");
+        exit (EXIT_FAILURE);
+    }
+    if (semUp (semgid, sh->ingredient[ing2]) == -1) {                                                        /* leave critical region */
+        perror ("error on the up operation for semaphore access (AG)");
+        exit (EXIT_FAILURE);
+    }
 }
 
 /**
@@ -171,6 +185,10 @@ static void waitForCigarette ()
     }
 
     /* TODO: insert your code here */
+    if (semUp (semgid, sh->waitCigarette) == -1) {                                                        /* leave critical region */
+        perror ("error on the up operation for semaphore access (AG)");
+        exit (EXIT_FAILURE);
+    }
 }
 
 /**

@@ -150,6 +150,7 @@ static double normalRand(double stddev)
 static bool waitForIngredients (int id)
 {
     bool ret = true;
+    int smokers_ids[NUMSMOKERS] = {id%3, (id+1)%3};
 
     if (semDown (semgid, sh->mutex) == -1)  {                                                     /* enter critical region: 1 processo por vez*/
         perror ("error on the up operation for semaphore access (SM)");
@@ -166,8 +167,20 @@ static bool waitForIngredients (int id)
         exit (EXIT_FAILURE);
     }
 
-    /* TODO: ids dos fumadores*/
-    /* TODO: semaforo dos ingredientes */
+    /* TODO: ****/
+    size_t n_smokers = sizeof(smokers_ids) / sizeof(smokers_ids[0]);
+    for (int i = 0 ; i < n_smokers ; i++) {
+        if (semDown(semgid, sh->wait2Ings[smokers_ids[i]])) {
+            perror ("error on the down operation for semaphore access (SM)");
+            exit (EXIT_FAILURE);
+        }
+    }
+
+    /* TODO: semaforo dos ingredientes OK*/
+    if (semDown(semgid, sh->wait2Ings[id]) == -1) {
+        perror ("error on the down operation for semaphore access (SM)");
+        exit (EXIT_FAILURE);
+    }
 
     if (semDown (semgid, sh->mutex) == -1)  {                                                     /* enter critical region */
         perror ("error on the up operation for semaphore access (SM)");
@@ -208,6 +221,12 @@ static void rollingCigarette (int id)
 
     /* TODO: insert your code here */
     sh->fSt.st.smokerStat[id] = ROLLING;
+
+    // Usando os ingredientes
+    for (int i = 0 ; i < NUMINGREDIENTS ; i++) {
+        sh->fSt.ingredients[i] = 0;
+    }
+
     saveState(nFic, &sh->fSt);
 
     if (semUp (semgid, sh->mutex) == -1) {                                                         /* exit critical region */
@@ -221,7 +240,7 @@ static void rollingCigarette (int id)
     }
 
     if (semUp(semgid, sh->waitCigarette) == -1) {
-        perror ("error on the down operation for semaphore access (SM)"); // smoker ou agent?
+        perror ("error on the down operation for semaphore access (SM)");
         exit (EXIT_FAILURE);
     }
 

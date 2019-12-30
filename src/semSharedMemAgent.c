@@ -127,6 +127,8 @@ int main (int argc, char *argv[])
 static void prepareIngredients ()
 {
 
+    int ing = rand()%NUMINGREDIENTS;
+    int ing2;
 
     if (semDown (semgid, sh->mutex) == -1) {                                                      /* enter critical region */
         perror ("error on the up operation for semaphore access (AG)");
@@ -138,9 +140,6 @@ static void prepareIngredients ()
     sh->fSt.st.agentStat = PREPARING;
     saveState(nFic, &sh->fSt);
 
-    /* TODO: ids dos agentes */
-    int ing = rand()%NUMINGREDIENTS;
-    int ing2;
     if (ing == ing2) {
         ing2 = rand()%NUMINGREDIENTS;
     }
@@ -152,6 +151,7 @@ static void prepareIngredients ()
     }
 
     /* TODO: insert your code here */
+    /* diferentes semaforos para os ingredientes */
     if (semUp (semgid, sh->ingredient[ing]) == -1) {                                                        /* leave critical region */
         perror ("error on the up operation for semaphore access (AG)");
         exit (EXIT_FAILURE);

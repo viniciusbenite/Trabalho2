@@ -167,7 +167,6 @@ static bool waitForIngredients (int id)
         exit (EXIT_FAILURE);
     }
 
-    /* TODO: ****/
     size_t n_smokers = sizeof(smokers_ids) / sizeof(smokers_ids[0]);
     for (int i = 0 ; i < n_smokers ; i++) {
         if (semDown(semgid, sh->wait2Ings[smokers_ids[i]])) {
@@ -176,7 +175,6 @@ static bool waitForIngredients (int id)
         }
     }
 
-    /* TODO: semaforo dos ingredientes OK*/
     if (semDown(semgid, sh->wait2Ings[id]) == -1) {
         perror ("error on the down operation for semaphore access (SM)");
         exit (EXIT_FAILURE);
@@ -256,6 +254,9 @@ static void rollingCigarette (int id)
  */
 static void smoke(int id)
 {
+
+    double smokingTime = 100.0 + normalRand(30.0);
+
     if (semDown (semgid, sh->mutex) == -1)  {                                                     /* enter critical region */
         perror ("error on the up operation for semaphore access (SM)");
         exit (EXIT_FAILURE);
@@ -272,6 +273,15 @@ static void smoke(int id)
     }
 
     /* TODO: insert your code here */
+
+    if (smokingTime > 0) {
+        nanosleep(rollingTime);
+    }
+
+    if (semUp (semgid, sh->mutex) == -1) {                                                         /* exit critical region */
+        perror ("error on the down operation for semaphore access (SM)");
+        exit (EXIT_FAILURE);
+    }
 
 }
 

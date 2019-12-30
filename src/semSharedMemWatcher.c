@@ -214,7 +214,7 @@ static int updateReservations (int id)
             smoker = i;
         }
     }
-    // pode fumar
+    // smoker pode fumar
     if (numero_ingredientes == 2) {
         ret = smoker;
     }
@@ -247,7 +247,6 @@ static void informSmoker (int id, int smokerReady)
     sh->fSt.st.watcherStat[id] = INFORMING;
     saveState(nFic, &sh->fSt);
 
-    /* TODO: ? */
     for (int i = 0 ; i < NUMSMOKERS ; i++) {
         sh->fSt.reserved[i] = 0;
     }

@@ -275,7 +275,7 @@ static void smoke(int id)
     /* TODO: insert your code here */
 
     if (smokingTime > 0) {
-        nanosleep(rollingTime);
+        nanosleep(smokingTime);
     }
 
     if (semUp (semgid, sh->mutex) == -1) {                                                         /* exit critical region */

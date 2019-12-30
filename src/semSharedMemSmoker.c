@@ -150,7 +150,7 @@ static double normalRand(double stddev)
 static bool waitForIngredients (int id)
 {
     bool ret = true;
-    int smokers_ids[NUMSMOKERS] = {id%3, (id+1)%3};
+    int smokers_ids[NUMSMOKERS] = {id%NUMSMOKERS, (id+1)%NUMSMOKERS};
 
     if (semDown (semgid, sh->mutex) == -1)  {                                                     /* enter critical region: 1 processo por vez*/
         perror ("error on the up operation for semaphore access (SM)");

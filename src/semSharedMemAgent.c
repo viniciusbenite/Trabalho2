@@ -127,6 +127,9 @@ int main (int argc, char *argv[])
 static void prepareIngredients ()
 {
 
+    int ing = rand() % sh->fSt.nIngredients;
+    int ing2;
+
     if (semDown (semgid, sh->mutex) == -1) {                                                      /* enter critical region */
         perror ("error on the up operation for semaphore access (AG)");
         exit (EXIT_FAILURE);

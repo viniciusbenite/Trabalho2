@@ -234,7 +234,7 @@ static void rollingCigarette (int id)
     
     /* TODO: insert your code here */
     if (rollingTime > 0) {
-        nanosleep(rollingTime);
+        usleep(rollingTime);
     }
 
     if (semUp(semgid, sh->waitCigarette) == -1) {
@@ -275,7 +275,7 @@ static void smoke(int id)
     /* TODO: insert your code here */
 
     if (smokingTime > 0) {
-        nanosleep(smokingTime);
+        usleep(smokingTime);
     }
 
     if (semUp (semgid, sh->mutex) == -1) {                                                         /* exit critical region */

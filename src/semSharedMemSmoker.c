@@ -150,7 +150,6 @@ static double normalRand(double stddev)
 static bool waitForIngredients (int id)
 {
     bool ret = true;
-    int smokers_ids[NUMSMOKERS] = {id%3, (id+1)%3};
 
     if (semDown (semgid, sh->mutex) == -1)  {                                                     /* enter critical region: 1 processo por vez*/
         perror ("error on the up operation for semaphore access (SM)");
@@ -167,13 +166,14 @@ static bool waitForIngredients (int id)
         exit (EXIT_FAILURE);
     }
 
-    size_t n_smokers = sizeof(smokers_ids) / sizeof(smokers_ids[0]);
-    for (int i = 0 ; i < n_smokers ; i++) {
-        if (semDown(semgid, sh->wait2Ings[smokers_ids[i]])) {
-            perror ("error on the down operation for semaphore access (SM)");
-            exit (EXIT_FAILURE);
-        }
-    }
+// size crasha no meio
+//    size_t n_smokers = sizeof(smokers_ids) / sizeof(smokers_ids[0]);
+//    for (int i = 0 ; i < n_smokers ; i++) {
+//        if (semDown(semgid, sh->wait2Ings[smokers_ids[i]])) {
+//            perror ("error on the down operation for semaphore access (SM)");
+//            exit (EXIT_FAILURE);
+//        }
+//    }
 
     if (semDown(semgid, sh->wait2Ings[id]) == -1) {
         perror ("error on the down operation for semaphore access (SM)");

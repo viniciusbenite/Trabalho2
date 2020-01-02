@@ -161,12 +161,12 @@ static bool waitForIngredient(int id)
 
     /* TODO: insert your code here */
     if (sh->fSt.closing) {
+        sh->fSt.st.watcherStat[id] = CLOSING_W;
+        saveState(nFic, &sh->fSt);
         if (semUp(semgid, sh->wait2Ings[id]) == -1) {
             perror ("error on the up operation for semaphore access (WT)");
             exit (EXIT_FAILURE);
         }
-        sh->fSt.st.watcherStat[id] = CLOSING_W;
-        saveState(nFic, &sh->fSt);
         ret = false; // \return false if closing; true if not closing
     }
 
@@ -203,11 +203,11 @@ static int updateReservations (int id)
 
     /* TODO: insert your code here */
     sh->fSt.st.watcherStat[id] = UPDATING;
-    sh->fSt.reserved[id] += 1;
     saveState(nFic, &sh->fSt);
+    sh->fSt.reserved[id] += 1;
 
-    for (int i = 0 ; i < NUMINGREDIENTS ; i++) {
-        if (sh->fSt.reserved[i] == 1) {
+    for (int i = 0 ; i < sh->fSt.nIngredients ; i++) {
+        if (sh->fSt.reserved[i] > 0) {
             numero_ingredientes += 1;
         }
         else {
@@ -238,6 +238,7 @@ static int updateReservations (int id)
 
 static void informSmoker (int id, int smokerReady)
 {
+
     if (semDown (semgid, sh->mutex) == -1)  {                                                     /* enter critical region */
         perror ("error on the up operation for semaphore access (WT)");
         exit (EXIT_FAILURE);

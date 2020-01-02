@@ -127,9 +127,6 @@ int main (int argc, char *argv[])
 static void prepareIngredients ()
 {
 
-    int ing = rand()%NUMINGREDIENTS;
-    int ing2;
-
     if (semDown (semgid, sh->mutex) == -1) {                                                      /* enter critical region */
         perror ("error on the up operation for semaphore access (AG)");
         exit (EXIT_FAILURE);
@@ -138,11 +135,12 @@ static void prepareIngredients ()
     /* TODO: insert your code here */
     /* Preparando os ingredientes */
     sh->fSt.st.agentStat = PREPARING;
-    saveState(nFic, &sh->fSt);
 
-    if (ing == ing2) {
-        ing2 = rand()%NUMINGREDIENTS;
-    }
+    do { ing2 = rand() % sh->fSt.nIngredients; }
+    while(ing2 == ing);
+
+    sh->fSt.ingredients[ing] += 1;
+    sh->fSt.ingredients[ing2] += 1;
     saveState(nFic, &sh->fSt);
 
     if (semUp (semgid, sh->mutex) == -1) {                                                        /* leave critical region */
@@ -185,7 +183,7 @@ static void waitForCigarette ()
     }
 
     /* TODO: insert your code here */
-    if (semUp (semgid, sh->waitCigarette) == -1) {                                                        /* leave critical region */
+    if (semDown (semgid, sh->waitCigarette) == -1) {                                                        /* leave critical region */
         perror ("error on the up operation for semaphore access (AG)");
         exit (EXIT_FAILURE);
     }
@@ -205,10 +203,9 @@ static void closeFactory ()
 
     /* TODO: insert your code here */
     /* Fechar a fabrica */
-    sh->fSt.closing = true;
     sh->fSt.st.agentStat = CLOSING_A; // Agente
     saveState(nFic, &sh->fSt);
-
+    sh->fSt.closing = true;
 
     if (semUp (semgid, sh->mutex) == -1) {                                                        /* leave critical region */
         perror ("error on the up operation for semaphore access (AG)");
